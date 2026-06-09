@@ -1,10 +1,12 @@
 // ===== 每日打卡 PWA Service Worker =====
 const CACHE_NAME = 'checkin-v4'
 const ASSETS = [
-  '打卡表.html',
+  'index.html',
   'vue.global.prod.js',
   'manifest.json',
   'icon.svg',
+  'icon-192.png',
+  'icon-512.png',
 ]
 
 // ── Install: 预缓存核心文件 ──
@@ -37,7 +39,7 @@ self.addEventListener('fetch', event => {
         return res
       }).catch(() => {
         // 网络不可用且无缓存 → 返回离线页面
-        return caches.match('打卡表.html')
+        return caches.match('index.html')
       })
     })
   )
