@@ -11,6 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="打卡表">
   <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" href="icon-96.png" sizes="96x96">
   <link rel="icon" href="icon-192.png" sizes="192x192">
   <link rel="icon" href="icon-512.png" sizes="512x512">
   <!-- 启动屏颜色 -->
@@ -1701,16 +1702,19 @@
 
         function registerSW() {
           if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js').then(reg => {
+            navigator.serviceWorker.register('service-worker.js', { scope: '/checkin-app/' }).then(reg => {
+              console.log('SW registered, scope:', reg.scope)
               // 检测 SW 更新
               reg.addEventListener('updatefound', () => {
                 const newSW = reg.installing
-                newSW.addEventListener('statechange', () => {
-                  if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-                    // 新版本已下载完成（且不是首次安装）
-                    swUpdateAvailable.value = true
-                  }
-                })
+                if (newSW) {
+                  newSW.addEventListener('statechange', () => {
+                    if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+                      // 新版本已下载完成（且不是首次安装）
+                      swUpdateAvailable.value = true
+                    }
+                  })
+                }
               })
             }).catch(() => {
               // SW 注册失败（可能是 file:// 协议），静默忽略
